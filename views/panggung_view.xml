@@ -19,7 +19,7 @@
     </record>
 
     <!-- wedding.panggung form view -->
-    <record id="model_name_view_form" model="ir.ui.view">
+    <record id="wedding_panggung_view_form" model="ir.ui.view">
         <field name="name">Form Panggung Pelaminan</field>
         <field name="model">wedding.panggung</field>
         <field name="arch" type="xml">
@@ -48,6 +48,7 @@
                         <page string="DESKRIPSI KURSI PENGANTIN">
                             <field name="des_kursipengantin"/>
                         </page>
+                        
                     </notebook>
                 </sheet>
             </form>

@@ -9,8 +9,10 @@
             <tree>
                 <!-- Add your fields here -->
                 <field name="name"/>
+                <field name="tanggal_pesan"/>
+                <field name="tanggal_pengiriman"/>
                 <field name="total"/>
-                <field name="orderdetail_ids"/>
+                <field name="orderpanggungdetail_ids"/>
             </tree>
         </field>
     </record>
@@ -25,20 +27,17 @@
                     <group>
                         <!-- Add your fields here -->
                         <field name="name"/>
+                        <field name="tanggal_pesan"/>
+                        <field name="tanggal_pengiriman"/>
                         <field name="total"/>
-                    
-                    <notebook colspan='4'>
-                        <page name="panggung" string="Panggung">
-                            <field name="orderdetail_ids">
-                                <tree editable='bottom'>
-                                    <field name="panggung_id"/>
-                                    <field name="harga_satuan"/>
-                                    <field name="qty"/>
-                                    <field name="harga" sum="Total"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
+                        <field name="orderpanggungdetail_ids">
+                            <tree editable='bottom'>
+                                <field name="panggung_id"/>
+                                <field name="harga_satuan"/>
+                                <field name="qty"/>
+                                <field name="harga" sum="Total"/>
+                            </tree>
+                        </field>
                     </group>
                 </sheet>
             </form>
@@ -56,7 +55,7 @@
     <!-- This Menu Item must have a parent and an action -->
     <menuitem
         id="wedding_order_menu_act"
-        name="Order"
+        name="Order Panggung"
         parent="wedding_order_menu_categ"
         action="wedding_order_action"
         sequence="10"/>
