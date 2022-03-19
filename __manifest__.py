@@ -34,6 +34,7 @@
         'views/kursipengantin_view.xml',
         'views/kursitamu_view.xml',
         'views/order_view.xml',
+        'views/pegawai_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
