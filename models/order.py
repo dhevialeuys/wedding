@@ -1,4 +1,5 @@
 from email.policy import default
+from odoo.exceptions import ValidationError
 from odoo import api, fields, models
 
 
@@ -20,6 +21,10 @@ class Order(models.Model):
     name = fields.Char(string='Kode Order', required=True)
     tanggal_pesan = fields.Datetime('Tanggal Pemesanan', default = fields.Datetime.now)
     tanggal_pengiriman = fields.Date(string='Tanggal Pengiriman', default = fields.Date.today())
+    pemesan = fields.Many2one(
+        comodel_name='res.partner',
+        string='Pemesan',
+        domain=[('is_customernya', '=', True)], store=True)
     
     total = fields.Integer(compute='_compute_total', string='Total', store=True)
     
@@ -30,6 +35,10 @@ class Order(models.Model):
             b = sum(self.env['wedding.orderkursitamudetail'].search([('order_id', '=', record.id)]).mapped('harga'))
             record.total = a + b
 
+    sudah_kembali = fields.Boolean(string='Sudah Dikembalikan', default=False)
+    def kembali_barang(self):
+        pass
+
 class OrderPanggungDetail(models.Model):
     _name = 'wedding.orderpanggungdetail'
     _description = 'New Description'
@@ -37,7 +46,7 @@ class OrderPanggungDetail(models.Model):
     order_id = fields.Many2one(comodel_name='wedding.order', string='Order')
     panggung_id = fields.Many2one(comodel_name='wedding.panggung', string='Panggung')
 
-    name = fields.Selection(string='Name', selection=[('panggung', 'Panggung')])
+    name = fields.Char(string='Name')
     harga = fields.Integer(compute='_compute_harga', string='Harga')
     qty = fields.Integer(string='Quantity')
     harga_satuan = fields.Integer(compute='_compute_harga_satuan', string='Harga Satuan')
@@ -64,8 +73,11 @@ class OrderKursiTamuDetail(models.Model):
     _description = 'New Description'
 
     order_id = fields.Many2one(comodel_name='wedding.order', string='Order Kursi')
-    kursitamu_id = fields.Many2one(comodel_name='wedding.kursitamu', string='Kursi Tamu')
-    name = fields.Selection(string='Name', selection=[('panggung', 'Panggung'), ('kursitamu', 'Kursi Tamu')])
+    kursitamu_id = fields.Many2one(
+        comodel_name='wedding.kursitamu',
+        string='Kursi Tamu',
+        domain=[('stok', '>', '100')])
+    name = fields.Char(string='Name')
     harga_satuan = fields.Integer(compute='_compute_harga_satuan', string='Harga Satuan')
     
     @api.depends('kursitamu_id')
@@ -74,7 +86,14 @@ class OrderKursiTamuDetail(models.Model):
             record.harga_satuan = record.kursitamu_id.harga
     
     qty = fields.Integer(string = 'Quantity')
-
+    
+    @api.constrains('qty')
+    def _check_stok(self):
+        for record in self:
+            bahan = self.env['wedding.kursitamu'].search([('stok', '<', record.qty),('id', '=', record.id)])
+            if bahan:
+                raise ValidationError("Stok kursi yang dipilih tidak cukup")
+            
     harga = fields.Integer(compute='_compute_harga', string='Harga')
     
     @api.depends('harga_satuan', 'qty')
@@ -82,3 +101,9 @@ class OrderKursiTamuDetail(models.Model):
         for record in self:
             record.harga = record.harga_satuan * record.qty
     
+    @api.model
+    def create(self, vals):
+        record = super(OrderKursiTamuDetail, self).create(vals)
+        if record.qty:
+            self.env['wedding.kursitamu'].search([('id', '=', record.kursitamu_id.id)]).write({'stok':record.kursitamu_id.stok-record.qty})
+            return record

@@ -6,12 +6,17 @@
         <field name="name">Wedding Order</field>
         <field name="model">wedding.order</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree delete = "false">
+                <header>
+                    <button name="kembali_barang" string="Kembali Barang" type="object" class="btn btn-success"/>
+                </header>
                 <!-- Add your fields here -->
                 <field name="name"/>
+                <field name="pemesan"/>
                 <field name="tanggal_pesan"/>
                 <field name="tanggal_pengiriman"/>
                 <field name="total"/>
+                <field name="sudah_kembali"/>
                 <field name="orderpanggungdetail_ids"/>
             </tree>
         </field>
@@ -27,12 +32,22 @@
                     <group>
                         <!-- Add your fields here -->
                         <field name="name"/>
+                        <field name="pemesan"/>
                         <field name="tanggal_pesan"/>
                         <field name="tanggal_pengiriman"/>
                         <field name="total"/>
+                        <field name="sudah_kembali"/>
                         <field name="orderpanggungdetail_ids">
                             <tree editable='bottom'>
                                 <field name="panggung_id"/>
+                                <field name="harga_satuan"/>
+                                <field name="qty"/>
+                                <field name="harga" sum="Total"/>
+                            </tree>
+                        </field>
+                        <field name="orderkursitamudetail_ids">
+                            <tree editable='bottom'>
+                                <field name="kursitamu_id"/>
                                 <field name="harga_satuan"/>
                                 <field name="qty"/>
                                 <field name="harga" sum="Total"/>
@@ -46,7 +61,7 @@
 
     <!-- wedding.order action window -->
     <record id="wedding_order_action" model="ir.actions.act_window">
-        <field name="name">Wedding Order</field>
+        <field name="name">Order Panggung</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">wedding.order</field>
         <field name="view_mode">tree,form</field>
