@@ -11,6 +11,7 @@
                 <field name="tipe"/>
                 <field name="stok"/>
                 <field name="harga"/>
+                <field name="img" widget = "image"/>
             </tree>
         </field>
     </record>

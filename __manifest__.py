@@ -37,6 +37,7 @@
         'views/pegawai_view.xml',
         'views/customer_view.xml',
         'views/pengembalian_view.xml',
+        'views/akunting_view.xml',
         'report/report.xml',
         'report/order_report.xml',
     ],

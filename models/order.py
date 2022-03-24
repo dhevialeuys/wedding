@@ -14,7 +14,7 @@ class Order(models.Model):
     
     orderkursitamudetail_ids = fields.One2many(
         comodel_name='wedding.orderkursitamudetail',
-        inverse_name='order_id',
+        inverse_name='orderk_id',
         string='Order Kursi Tamu')
     
 
@@ -32,7 +32,7 @@ class Order(models.Model):
     def _compute_total(self):
         for record in self:
             a = sum(self.env['wedding.orderpanggungdetail'].search([('order_id', '=', record.id)]).mapped('harga'))
-            b = sum(self.env['wedding.orderkursitamudetail'].search([('order_id', '=', record.id)]).mapped('harga'))
+            b = sum(self.env['wedding.orderkursitamudetail'].search([('orderk_id', '=', record.id)]).mapped('harga'))
             record.total = a + b
 
     sudah_kembali = fields.Boolean(string='Sudah Dikembalikan', default=False)
@@ -72,7 +72,7 @@ class OrderKursiTamuDetail(models.Model):
     _name = 'wedding.orderkursitamudetail'
     _description = 'New Description'
 
-    order_id = fields.Many2one(comodel_name='wedding.order', string='Order Kursi')
+    orderk_id = fields.Many2one(comodel_name='wedding.order', string='Order Kursi')
     kursitamu_id = fields.Many2one(
         comodel_name='wedding.kursitamu',
         string='Kursi Tamu',
