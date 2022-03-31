@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <tree>
                 <header>
-                    <button name="kembali_barang" string="Kembali Barang" type="object" class="btn btn-success"/>
+                    <button string="Create Invoice" name="invoice" type="object" class="oe_highlight"/>
                 </header>
                 <!-- Add your fields here -->
                 <field name="name"/>
@@ -16,8 +16,9 @@
                 <field name="tanggal_pesan"/>
                 <field name="tanggal_pengiriman"/>
                 <field name="total"/>
-                <field name="sudah_kembali"/>
                 <field name="orderpanggungdetail_ids"/>
+                <field name="orderkursitamudetail_ids"/>
+                <field name="sudah_kembali"/>
             </tree>
         </field>
     </record>
