@@ -61,6 +61,12 @@ class OrderPanggungDetail(models.Model):
     name = fields.Char(string='Name')
     harga = fields.Integer(compute='_compute_harga', string='Harga')
     qty = fields.Integer(string='Quantity')
+    @api.onchange('qty')
+    def onchange_qty(self):
+        for record in self:
+            if record.qty > record.panggung_id.stok:
+                raise ValidationError("Stok Panggung Tidak Mencukupi")
+    
     harga_satuan = fields.Integer(compute='_compute_harga_satuan', string='Harga Satuan')
     
     @api.depends('panggung_id')
@@ -99,13 +105,12 @@ class OrderKursiTamuDetail(models.Model):
     
     qty = fields.Integer(string = 'Quantity')
     
-    @api.constrains('qty')
-    def _check_stok(self):
+    @api.onchange('qty')
+    def onchange_qty(self):
         for record in self:
-            bahan = self.env['wedding.kursitamu'].search([('stok', '<', record.qty),('id', '=', record.id)])
-            if bahan:
-                raise ValidationError("Stok kursi yang dipilih tidak cukup")
-            
+            if record.qty > record.kursitamu_id.stok:
+                raise ValidationError("Stok Kursi Tidak Mencukupi")
+        
     harga = fields.Integer(compute='_compute_harga', string='Harga')
     
     @api.depends('harga_satuan', 'qty')

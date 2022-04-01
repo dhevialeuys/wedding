@@ -29,6 +29,7 @@
                         <field name="tipe"/>
                         <field name="stok"/>
                         <field name="harga"/>
+                        <field name="img" widget = "image"/>
                     </group>
                 </sheet>
             </form>
